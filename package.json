@@ -1,0 +1,35 @@
+{
+  "name": "nodejs-demo-app",
+  "version": "1.0.0",
+  "description": "this is a nodejs demo app",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "start": "babel-node ./app.js",
+    "test": "jest",
+    "build": "echo Test build completed! No package was uploaded"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YannMjl/nodejs-demo-app.git"
+  },
+  "keywords": [
+    "node",
+    "nodejs",
+    "express",
+    "babel"
+  ],
+  "author": "Yann Mulonda",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YannMjl/nodejs-demo-app/issues"
+  },
+  "homepage": "https://github.com/YannMjl/nodejs-demo-app#readme",
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset": "^1.1.7",
+    "babel-preset-env": "^1.7.0",
+    "express": "^4.17.1",
+    "jest": "^27.0.3"
+  }
+}
