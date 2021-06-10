@@ -8,7 +8,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nodej-demo-app-deployment
+  name: nodej-demo-app
   namespace: default
 spec:
   replicas: 3                     # this is number of pods
@@ -24,8 +24,8 @@ spec:
       # Image field in Kubernetes resources is simply the docker image to run.
       containers:
       - name: nodejs-demo-app
-      # pulling image from my DockerHub
-      image: yanndocker/nodejs-demo:latest    
+        # pulling image from my DockerHub
+        image: yanndocker/nodejs-demo:latest  
     
     # -----------------------------------------------------------*
     # If your image is hosted in a private docker hub repo, 
@@ -56,6 +56,7 @@ spec:
   selector:
     bb: web
   ports:
-  - port: 8080
-    targetPort: 8080
-    nodePort: 3000
+  - port: 80
+    targetPort: 80
+    # The range of valid ports in kubernetes is 30000-32767
+    nodePort: 30001

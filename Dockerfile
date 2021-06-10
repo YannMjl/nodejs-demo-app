@@ -35,6 +35,6 @@ RUN npm ci --only=production
 # Bundle app source
 COPY . /app
 
-EXPOSE 3000
+EXPOSE 30002
 
 CMD [ "babel-node", "app.js" ]
