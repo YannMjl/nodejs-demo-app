@@ -1,5 +1,5 @@
-# consider adding https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#progress-deadline-seconds
-# 10m sometimes insufficient given low power of nodes
+# check out all Kubernetes commands here:
+# https://kubernetes.io/docs/reference/kubectl/cheatsheet/
 
 # -----------------------------------------------------------*
 # implies the use of kubernetes 1.7
@@ -61,25 +61,29 @@ kind: Service
 metadata:
   name: nodejs-demo-app-entrypoint
   namespace: default
-# -----------------------------------------------------------*
-# if you're using service type NodePort. To access you app
-# and test it locally you need to listen on local port.
-# you can do that by forwarding a local port to Service target 
-# port with name <my-service-name>
-# e.g -- kubectl port-forward svc/my-service 3000:'my-service-port'  
-# -----------------------------------------------------------*
 spec:
+  # -----------------------------------------------------------*
+  # if you're using service type NodePort. To access you app
+  # and test it locally you need to listen on local port.
+  # you can do that by forwarding a local port to Service target 
+  # port with name <my-service-name>
+  # e.g -- 
+  # kubectl port-forward service/nodejs-demo-app-entrypoint 3000:443
+  # -----------------------------------------------------------*
   # type: NodePort
+  type: LoadBalancer
   selector:
     app: nodejs-demo-app
   # The range of valid ports in kubernetes is 30000-32767
   ports:
     - name: http
       protocol: TCP
-      port: 80
+      port: 80             # this is service port 80
       targetPort: 30002
+      nodePort: 30003
     - name: https
       protocol: TCP
-      port: 443
+      port: 443            # this is service port 443
       targetPort: 30002
-  type: LoadBalancer
+      nodePort: 30004
+  
