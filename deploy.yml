@@ -25,8 +25,25 @@ spec:
       containers:
       - name: nodejs-demo-app
         # pulling image from my DockerHub
-        image: yanndocker/nodejs-demo:latest  
-    
+        image: yanndocker/nodejs-demo:latest
+        # -----------------------------------------------------------*
+        # It is a good practice to declare resource requests and 
+        # limits for both memory and cpu for each container. 
+        # This helps to schedule the container to a node that has 
+        # available resources for your Pod, and also so that your 
+        # Pod does not use resources that other Pods needs
+        # -----------------------------------------------------------*
+        resources:
+          limits:
+            memory: 512Mi
+            cpu: "1"
+          requests:
+            memory: 256Mi
+            cpu: "0.2"
+        # specify the container port
+        ports:
+        - containerPort: 30002
+
     # -----------------------------------------------------------*
     # If your image is hosted in a private docker hub repo, 
     # you need to specify an image pull secret in the spec field.
@@ -45,18 +62,24 @@ metadata:
   name: nodejs-demo-app-entrypoint
   namespace: default
 # -----------------------------------------------------------*
-# this specify the port the same way we do when we run 
-# docker run -p 8080:3000 yanndocker/node-demo
-# A NodePort service, which will route traffic from port 3000
-# on your host to port 8080 inside the pods it routes to, 
-# allowing you to reach your bulletin board from the network.
+# if you're using service type NodePort. To access you app
+# and test it locally you need to listen on local port.
+# you can do that by forwarding a local port to Service target 
+# port with name <my-service-name>
+# e.g -- kubectl port-forward svc/my-service 3000:'my-service-port'  
 # -----------------------------------------------------------*
 spec:
-  type: NodePort
+  # type: NodePort
   selector:
-    bb: web
+    app: nodejs-demo-app
+  # The range of valid ports in kubernetes is 30000-32767
   ports:
-  - port: 80
-    targetPort: 80
-    # The range of valid ports in kubernetes is 30000-32767
-    nodePort: 30001
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 30002
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 30002
+  type: LoadBalancer
