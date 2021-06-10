@@ -1,0 +1,61 @@
+# consider adding https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#progress-deadline-seconds
+# 10m sometimes insufficient given low power of nodes
+
+# -----------------------------------------------------------*
+# implies the use of kubernetes 1.7
+# use apps/v1beta2 for kubernetes 1.8
+# -----------------------------------------------------------*
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodej-demo-app-deployment
+  namespace: default
+spec:
+  replicas: 3                     # this is number of pods
+  selector:
+    matchLabels:
+      app: nodejs-demo-app
+  template:
+    metadata:
+      labels:
+        app: nodejs-demo-app
+    spec:
+      # Kubernetes run docker pull pseudo/your-image:latest under the hood
+      # Image field in Kubernetes resources is simply the docker image to run.
+      containers:
+      - name: nodejs-demo-app
+      # pulling image from my DockerHub
+      image: yanndocker/nodejs-demo:latest    
+    
+    # -----------------------------------------------------------*
+    # If your image is hosted in a private docker hub repo, 
+    # you need to specify an image pull secret in the spec field.
+    # -----------------------------------------------------------*
+    # spec:
+    #   containers:
+    #   - name: app
+    #     image: pseudo/your-image:latest
+    #   imagePullSecrets:
+    #   - name: dockerhub-credential
+    # -----------------------------------------------------------*
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodejs-demo-app-entrypoint
+  namespace: default
+# -----------------------------------------------------------*
+# this specify the port the same way we do when we run 
+# docker run -p 8080:3000 yanndocker/node-demo
+# A NodePort service, which will route traffic from port 3000
+# on your host to port 8080 inside the pods it routes to, 
+# allowing you to reach your bulletin board from the network.
+# -----------------------------------------------------------*
+spec:
+  type: NodePort
+  selector:
+    bb: web
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 3000
