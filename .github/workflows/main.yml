@@ -40,7 +40,7 @@ jobs:
           npm ci 
 
       # build and test the apps     
-      - name: build
+      - name: build & test
         run: |
           npm run build
           npm run test
@@ -90,15 +90,12 @@ jobs:
     # only run this fater deploying to docker
     needs: [push_to_Docker_Hub]
     steps:
-      - uses: actions/checkout@v2
-      - uses: akhileshns/heroku-deploy@v3.12.12
+      - name: checkout repo
+        uses: actions/checkout@v2
+      - name: deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
           heroku_email: ${{ secrets.HEROKU_EMAIL }}
           usedocker: true
-          # healthcheck: https://nodejs-demo--appv1.herokuapp.com/health
-          # checkstring: "ok"
-
-      #     justlogin: true
-      # - run: heroku auth:whoami 
