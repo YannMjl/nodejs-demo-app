@@ -80,10 +80,10 @@ spec:
       protocol: TCP
       port: 80             # this is service port 80
       targetPort: 30002
-      nodePort: 30003
+      # nodePort: 30003      # this is for when using type: NodePort
     - name: https
       protocol: TCP
       port: 443            # this is service port 443
       targetPort: 30002
-      nodePort: 30004
+      # nodePort: 30004      # this is for when using type: NodePort
   
