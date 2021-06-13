@@ -91,10 +91,14 @@ jobs:
     needs: [push_to_Docker_Hub]
     steps:
       - uses: actions/checkout@v2
-      - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+      - uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
           heroku_email: ${{ secrets.HEROKU_EMAIL }}
-          justlogin: true
-      - run: heroku auth:whoami 
+          usedocker: true
+          healthcheck: https://nodejs-demo--appv1.herokuapp.com/health
+          checkstring: "ok"
+
+      #     justlogin: true
+      # - run: heroku auth:whoami 
