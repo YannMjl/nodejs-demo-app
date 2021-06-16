@@ -26,6 +26,10 @@ spec:
       - name: nodejs-demo-app
         # pulling image from my DockerHub
         image: yanndocker/nodejs-demo:latest
+        # using if not present works well with images that has tag
+        # if you image is tag:lastest - use Always otherwise you
+        # wouldn't get the fresh version of your image
+        imagePullPolicy: Always
         # -----------------------------------------------------------*
         # It is a good practice to declare resource requests and 
         # limits for both memory and cpu for each container. 
