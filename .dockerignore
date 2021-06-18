@@ -13,3 +13,6 @@ npm-debug.log
 *.md
 !README*.md
 README-secret.md
+
+# ignore all the file that create Kubernetes local dashboard 
+local_dashboard
