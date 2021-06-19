@@ -16,3 +16,8 @@ README-secret.md
 
 # ignore all the file that create Kubernetes local dashboard 
 local_dashboard
+
+# terraform files
+terraform.*
+.terraform/
+.terraform.*
