@@ -11,7 +11,7 @@ metadata:
   name: nodej-demo-app
   namespace: default
 spec:
-  replicas: 3                     # this is number of pods
+  replicas: 5                     # this is number of pods
   selector:
     matchLabels:
       app: nodejs-demo-app
