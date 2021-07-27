@@ -107,3 +107,6 @@ dist
 terraform.*
 .terraform/
 .terraform.*
+
+# IDE
+.vscode
