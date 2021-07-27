@@ -5,9 +5,12 @@
 resource "google_container_cluster" "primary" {
   name               = "node-demo-k8s"  # cluster name
    location          = "us-central1-c"
-  initial_node_count = 3               # number of node for the cluster
+  initial_node_count = 3               # number of node (VMs) for the cluster
 
-  # cluster auth
+  # Google recommends custom service accounts that have cloud-platform 
+  # scope and permissions granted via IAM Roles.
+  # for this demo, we'll have no auth set up
+  # master_auth: The aut information for accessing the Kubernetes master.
   master_auth {
     username = ""
     password = ""
@@ -19,7 +22,9 @@ resource "google_container_cluster" "primary" {
 
   # let's now configure kubectl to talk to the cluster
   provisioner "local-exec" {
-    command = "gcloud container clusters get-credentials ${var.cluster_name} --zone ${var.zone} --project ${var.project_id}"
+    # we will pas the project ID, zone and cluster name here
+    # nodejs-demo-319000 | us-central1-c | node-demo-k8s
+    command = "gcloud container clusters get-credentials node-demo-k8s --zone us-central1-c --project nodejs-demo-319000"
   }
 
   node_config {
@@ -58,7 +63,7 @@ resource "google_compute_firewall" "nodeports" {
 
   allow {
     protocol = "tcp"
-    ports    = ["30000-32767"]
+    ports    = ["30000-32767"]  # valid ports in kubernetes is 30000-32767
   }
   source_ranges = ["0.0.0.0/0"]
 }
