@@ -17,6 +17,7 @@ on:
 jobs:
   # This workflow contains multiple jobs
   build_test:
+    name: Build & Test App
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     strategy:
@@ -46,6 +47,7 @@ jobs:
           npm run test
 
   push_to_Docker_Hub:
+      name: Push Images to DockerHub
       # The type of runner that the job will run on
       runs-on: ubuntu-latest
       # build docker image and push to docker hub
@@ -116,9 +118,9 @@ jobs:
 
       # Setup gcloud CLI
       - name: setup gcloud CLI
-        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        uses: google-github-actions/setup-gcloud@master
         with:
-          service_account_email: ${{ secrets.GCP_EMAIL }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_CREDENTIALS }}
           export_default_credentials: true
 
