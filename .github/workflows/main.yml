@@ -86,8 +86,9 @@ jobs:
               echo ${{ steps.docker_build.outputs.digest }}
 
   deploy_to_heroku:
+    name: Deploy to Heroku
     runs-on: ubuntu-latest
-    # only run this fater deploying to docker
+    # only run this after deploying to docker
     needs: [push_to_Docker_Hub]
     steps:
       - name: checkout repo
@@ -103,3 +104,31 @@ jobs:
           # build the app docker image using the Dockerfile
           # and run that image in a container that's pushed to heroku
           usedocker: true
+
+  deploy_to_google_cloud:
+    name: Deploy to GCP
+    runs-on: ubuntu-latest
+    # only deploy to GPC if and after deploying to Heroku successed
+    needs: [deploy_to_heroku]
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v2
+
+      # Setup gcloud CLI
+      - name: setup gcloud CLI
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          service_account_email: ${{ secrets.GCP_EMAIL }}
+          service_account_key: ${{ secrets.GCP_CREDENTIALS }}
+          export_default_credentials: true
+
+      # Deploy the app using kubernetes (deploy.yml)
+      - name: Deploy
+        # To run kubectl commands against a cluster created in Cloud Console, 
+        # from another computer, or by another member of the project, 
+        # you need to generate a kubeconfig entry in your environment.
+        run: |
+          gcloud config set project ${{ secrets.GCP_PROJECT }}
+          gcloud config set compute/zone us-central1-c
+          gcloud container clusters get-credentials node-demo-k8s
+          kubectl apply -f deploy.yml
