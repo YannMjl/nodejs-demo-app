@@ -130,8 +130,11 @@ jobs:
         # To run kubectl commands against a cluster created in Cloud Console, 
         # from another computer, or by another member of the project, 
         # you need to generate a kubeconfig entry in your environment.
+        # gcloud config set project ${{ secrets.GCP_PROJECT }}
         run: |
-          gcloud config set project ${{ secrets.GCP_PROJECT }}
+          gcloud config set compute/region us-central1
           gcloud config set compute/zone us-central1-c
           gcloud container clusters get-credentials node-demo-k8s
           kubectl apply -f deploy.yml
+          kubectl get all
+          kubectl get svc
