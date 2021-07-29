@@ -74,20 +74,27 @@ spec:
   # e.g -- 
   # kubectl port-forward service/nodejs-demo-app-entrypoint 3000:443
   # -----------------------------------------------------------*
-  # type: NodePort
-  type: LoadBalancer
+  type: NodePort
+  # type: LoadBalancer
   selector:
     app: nodejs-demo-app
   # The range of valid ports in kubernetes is 30000-32767
   ports:
-    - name: http
-      protocol: TCP
-      port: 80             # this is service port 80
+    - protocol: TCP
+      port: 30002
       targetPort: 30002
-      # nodePort: 30003      # this is for when using type: NodePort
-    - name: https
-      protocol: TCP
-      port: 443            # this is service port 443
-      targetPort: 30002
-      # nodePort: 30004      # this is for when using type: NodePort
+      nodePort: 30002
+    # -----------------------------------------------------------*
+    # this block is for when you wanna use the type load balancer
+    # -----------------------------------------------------------*
+    # - name: http
+    #   protocol: TCP
+    #   port: 80             # this is service port 80
+    #   targetPort: 30002
+    #   # nodePort: 30003      # this is for when using type: NodePort
+    # - name: https
+    #   protocol: TCP
+    #   port: 443            # this is service port 443
+    #   targetPort: 30002
+    #   # nodePort: 30004      # this is for when using type: NodePort
   
