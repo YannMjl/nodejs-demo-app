@@ -137,5 +137,4 @@ jobs:
           gcloud container clusters get-credentials node-demo-k8s
           envsubst < deploy.yml
           envsubst < deploy.yml | kubectl apply -f -
-          watch -n 1 kubectl get pods
           kubectl get all
