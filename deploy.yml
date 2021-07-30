@@ -11,7 +11,7 @@ metadata:
   name: nodejs-demo-app
   namespace: default
 spec:
-  replicas: 5                     # this is number of pods
+  replicas: 4                     # this is number of pods
   selector:
     matchLabels:
       app: nodejs-demo-app
@@ -74,28 +74,28 @@ spec:
   # e.g -- 
   # kubectl port-forward service/nodejs-demo-app-entrypoint 3000:443
   # -----------------------------------------------------------*
-  type: NodePort
-  # type: LoadBalancer
+  # type: NodePort
+  type: LoadBalancer
   selector:
     app: nodejs-demo-app
   # The range of valid ports in kubernetes is 30000-32767
   ports:
-    - protocol: TCP
-      port: 30002
-      targetPort: 30002
-      nodePort: 30002
+    # - protocol: TCP
+    #   port: 30002
+    #   targetPort: 30002
+    #   nodePort: 30002
     # -----------------------------------------------------------*
     # this block is for when you wanna use the type load balancer
     # on your local computer or else where
     # -----------------------------------------------------------*
-    # - name: http
-    #   protocol: TCP
-    #   port: 80             # this is service port 80
-    #   targetPort: 30002
-    #   # nodePort: 30003      # this is for when using type: NodePort
-    # - name: https
-    #   protocol: TCP
-    #   port: 443            # this is service port 443
-    #   targetPort: 30002
-    #   # nodePort: 30004      # this is for when using type: NodePort
+    - name: http
+      protocol: TCP
+      port: 80             # this is service port 80
+      targetPort: 30002
+      # nodePort: 30003      # this is for when using type: NodePort
+    - name: https
+      protocol: TCP
+      port: 443            # this is service port 443
+      targetPort: 30002
+      # nodePort: 30004      # this is for when using type: NodePort
   
