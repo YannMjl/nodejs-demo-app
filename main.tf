@@ -68,8 +68,6 @@ resource "google_compute_firewall" "nodeports" {
   allow {
     protocol = "icmp"
   }
-
-  target_tags = ["node-demo-k8s"]
   source_ranges = ["0.0.0.0/0"]
 }
 
