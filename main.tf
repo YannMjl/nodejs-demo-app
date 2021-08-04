@@ -63,7 +63,23 @@ resource "google_compute_firewall" "nodeports" {
 
   allow {
     protocol = "tcp"
-    ports    = ["30000-32767"]  # valid ports in kubernetes is 30000-32767
+    ports    = ["30000-32767", "80", "443", "8080", "22"]  # valid ports in kubernetes is 30000-32767
   }
+  allow {
+    protocol = "icmp"
+  }
+
+  target_tags = ["node-demo-k8s"]
   source_ranges = ["0.0.0.0/0"]
 }
+
+# resource "google_compute_firewall" "ssh-rule" {
+#   name = "demo-ssh"
+#   network = google_compute_network.vpc_network.name
+#   allow {
+#     protocol = "tcp"
+#     ports = ["22"]
+#   }
+#   # target_tags = ["demo-vm-instance"]
+#   source_ranges = ["0.0.0.0/0"]
+# }
