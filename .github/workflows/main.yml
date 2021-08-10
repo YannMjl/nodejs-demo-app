@@ -135,6 +135,6 @@ jobs:
           gcloud config set compute/zone us-central1-c
           gcloud container clusters get-credentials node-demo-k8s
           envsubst < deploy.yml
-          envsubst < deploy.yml | apply create -f -
-          kubectl rollout status deployment/nodejs-demo-app
+          envsubst < deploy.yml | kubectl apply -f -
+          kubectl rollout status -w deployment/nodejs-demo-app
           kubectl get all
