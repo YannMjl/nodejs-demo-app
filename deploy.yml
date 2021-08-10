@@ -39,11 +39,11 @@ spec:
         # -----------------------------------------------------------*
         resources:
           limits:
-            memory: 512Mi
-            cpu: "1"
+            memory: 64Mi
+            cpu: "250m"
           requests:
-            memory: 256Mi
-            cpu: "0.2"
+            memory: 32Mi
+            cpu: "200m"
         # specify the container port
         ports:
         - containerPort: 30002
@@ -98,4 +98,4 @@ spec:
       port: 443            # this is service port 443
       targetPort: 30002
       # nodePort: 30004      # this is for when using type: NodePort
-  
+
