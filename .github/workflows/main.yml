@@ -108,7 +108,7 @@ jobs:
           usedocker: true
 
   deploy_to_google_cloud:
-    name: Deploy to Google Cloud Platform
+    name: Deploy to GCP
     runs-on: ubuntu-latest
     # only deploy to GPC if and after deploying to Heroku successed
     needs: [deploy_to_heroku]
