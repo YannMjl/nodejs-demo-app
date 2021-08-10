@@ -39,13 +39,11 @@ jobs:
         run: |
           npm install
           npm ci 
-
       # build and test the apps     
       - name: build & test
         run: |
           npm run build
           npm run test
-
   push_to_Docker_Hub:
       name: Push Images to DockerHub
       # The type of runner that the job will run on
@@ -86,7 +84,6 @@ jobs:
               echo "runing the docker image"
               echo "Testing the nodejs  app endpoints"
               echo ${{ steps.docker_build.outputs.digest }}
-
   deploy_to_heroku:
     name: Deploy to Heroku
     runs-on: ubuntu-latest
@@ -130,6 +127,7 @@ jobs:
         # To run kubectl commands against a cluster created in Cloud Console, 
         # from another computer, or by another member of the project, 
         # you need to generate a kubeconfig entry in your environment.
+        # gcloud config set project ${{ secrets.GCP_PROJECT }}
         run: |
           gcloud config set compute/region us-central1
           gcloud config set compute/zone us-central1-c
