@@ -56,16 +56,18 @@ jobs:
         export_default_credentials: true
 
     # Generates an execution plan for Terraform
-    - name: Terraform Plan
-      run: terraform plan
+    # - name: Terraform Plan
+    #   run: terraform plan
 
     # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". 
     # See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
-    - name: Terraform Apply or Destroy
+    - name: Terraform Apply
       # If any commit message in your push or the HEAD commit of your PR 
       # contains the strings <construire> -- then terraform Apply step will run
       if: "contains(github.event.commits[0].message, '[construire]')"
-      run: terraform apply -auto-approve
+      run: |
+       terraform plan
+       terraform apply -auto-approve
 
     - name: Terraform Destroy
       # If any commit message in your push or the HEAD commit of your PR 
