@@ -65,14 +65,14 @@ jobs:
       # If any commit message in your push or the HEAD commit of your PR 
       # contains the strings <construire> -- then terraform Apply step will run
       if: "contains(github.event.commits[0].message, '[construire]')"
+      # terraform plan
       run: |
-       terraform plan
        terraform apply -auto-approve
 
     - name: Terraform Destroy
       # If any commit message in your push or the HEAD commit of your PR 
       # contains the strings [detruire] -- then terraform Destry step will run
       if: "contains(github.event.commits[0].message, '[detruire]')"
+      # terraform plan -destroy
       run: |
-       terraform plan -destroy
        terraform apply -destroy -auto-approve
