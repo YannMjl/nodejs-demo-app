@@ -55,6 +55,11 @@ jobs:
         service_account_key: ${{ secrets.GCP_CREDENTIALS }}  
         export_default_credentials: true
 
+    - name: Verify gcloud config
+      run: |
+        gcloud config list
+        gcloud services list
+    
     # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". 
     # See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
     - name: Terraform Apply
@@ -62,15 +67,15 @@ jobs:
       # contains the strings <construire> -- then terraform Apply step will run
       if: "contains(github.event.commits[0].message, '[construire]')"
       # Generates an execution plan for Terraform
-      # terraform plan
       run: |
+       terraform plan
        terraform apply -auto-approve
 
     - name: Terraform Destroy
       # If any commit message in your push or the HEAD commit of your PR 
       # contains the strings [detruire] -- then terraform Destry step will run
       if: "contains(github.event.commits[0].message, '[detruire]')"
-      # Generates an execution plan for Terraform
-      # terraform plan -destroy
+      # destroy the execution plan for Terraform
       run: |
+       terraform plan -destroy
        terraform apply -destroy -auto-approve
