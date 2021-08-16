@@ -73,4 +73,6 @@ jobs:
       # If any commit message in your push or the HEAD commit of your PR 
       # contains the strings [detruire] -- then terraform Destry step will run
       if: "contains(github.event.commits[0].message, '[detruire]')"
-      run: terraform apply -destroy -auto-approve
+      run: |
+       terraform plan -destroy
+       terraform apply -destroy -auto-approve
