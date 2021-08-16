@@ -63,7 +63,7 @@ resource "google_compute_firewall" "nodeports" {
 
   allow {
     protocol = "tcp"
-    ports    = ["30000-32767", "80", "443", "8080", "22"]  # valid ports in kubernetes is 30000-32767
+    ports    = ["30000-32767", "80", "443", "22"]  # valid ports in kubernetes is 30000-32767
   }
   allow {
     protocol = "icmp"
