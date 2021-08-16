@@ -47,12 +47,15 @@ name: 'Terraform'
 on:
   push:
     branches:
-    - main
+    - terraform
   pull_request:
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 jobs:
   terraform:
-    name: 'Terraform'
+    name: 'Provision GCP'
     runs-on: ubuntu-latest
     environment: production
 
@@ -80,9 +83,18 @@ jobs:
     # - name: Terraform Format
     #   run: terraform fmt -check
 
-    # # Generates an execution plan for Terraform
-    # - name: Terraform Plan
-    #   run: terraform plan
+    # Setup gcloud CLI
+    - name: setup gcloud CLI
+      uses: google-github-actions/setup-gcloud@master
+      with:
+        project_id: ${{ secrets.GCP_PROJECT }}
+        # this is the json key of the service account created on the project
+        service_account_key: ${{ secrets.GCP_CREDENTIALS }}  
+        export_default_credentials: true
+
+    # Generates an execution plan for Terraform
+    - name: Terraform Plan
+      run: terraform plan
 
     #   # On push to main, build or change infrastructure according to Terraform configuration files
     #   # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
