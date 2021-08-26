@@ -57,6 +57,8 @@ jobs:
 
     - name: Verify gcloud config
       run: |
+        gcloud config set compute/region us-central1
+        gcloud config set compute/zone us-central1-c
         gcloud config list
         gcloud services list
     
