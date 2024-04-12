@@ -5,8 +5,8 @@ name: Deploy to ECR
 # Controls when the action will run. 
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
-  push:
-    branches: [ main ]
+  # push:
+  #   branches: [ main ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
@@ -51,13 +51,48 @@ jobs:
           npm run build
           npm run test
 
+  # Validate that Github Actions Access to AWS Account
+  # via AWS Github Integration role set up on that account.
+  Validate-Access:
+    name: Validate AWS Access
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      
+      - name: Configure AWS Credentials
+        id: creds
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ github.event.inputs.aws_account_id }}:role/${{ github.event.inputs.role }}
+          # this is usefull when doing audit or reviewing
+          # all the sessions/accesses of this role
+          role-session-name: deployEC2DashboardAlarms
+          aws-region: ${{ github.event.inputs.region}}
+
+      # validate access to the AWS account by retrieving details of all the instances
+      - name: Retrieve ECR repo Info 
+        id: ecr_info
+        run: |
+          aws ecr describe-repositories
+
+      - name: Action Job status
+        run: |
+          echo "${{ steps.ecr_info.outcome }}"
+          echo "${{ job.status }}"
+
   # upload the app docker image to AWS ECR
   push_to_AWS_ECR:
     name: Deploy docker image to AWS ECR
     runs-on: ubuntu-latest
 
     # run this job only if the app build and test successfully
-    needs: [build_test]
+    needs: [build_test, Validate-Access]
 
     # Add "id-token" with the intended permissions.
     permissions:
