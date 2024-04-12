@@ -9,6 +9,17 @@ on:
     branches: [ main ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      region:
+        description: 'Project AWS Region'
+        required: true
+        default: 'us-east-1'
+      aws_account_id:
+        description: 'Project AWS Account ID'
+        required: true
+      role:
+        description: 'Github Integration IAM role'
+        required: true
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -19,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [14.x, 18.x]
     
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -48,26 +59,34 @@ jobs:
     # run this job only if the app build and test successfully
     needs: [build_test]
 
+    # Add "id-token" with the intended permissions.
+    permissions:
+      id-token: write
+      contents: read
+
     steps:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
+    - name: Configure AWS Credentials
+      id: creds
+      uses: aws-actions/configure-aws-credentials@v4
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
+        role-to-assume: arn:aws:iam::${{ github.event.inputs.aws_account_id }}:role/${{ github.event.inputs.role }}
+        # this is usefull when doing audit or reviewing
+        # all the sessions/accesses of this role
+        role-session-name: deployImagetoECR
+        aws-region: ${{ github.event.inputs.region}}
 
     - name: Login to Amazon ECR
       id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
+      uses: aws-actions/amazon-ecr-login@v2
 
     - name: Build, tag, and push the image to Amazon ECR
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: ${{ secrets.AWS_REPO_NAME }}
+        ECR_REPOSITORY: nodejs-demo
         IMAGE_TAG: latest
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .

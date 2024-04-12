@@ -86,7 +86,7 @@ jobs:
             run: |
               echo "runing the docker image"
               echo "Testing the nodejs  app endpoints"
-              echo ${{ steps.docker_build.outputs.digest }}
+
   deploy_to_heroku:
     name: Deploy to Heroku
     runs-on: ubuntu-latest
@@ -112,21 +112,31 @@ jobs:
     runs-on: ubuntu-latest
     # only deploy to GPC if and after deploying to Heroku successed
     needs: [deploy_to_heroku]
+
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      
     steps:
       - name: checkout repo
         uses: actions/checkout@v2
 
       # Setup gcloud CLI
       - name: setup gcloud CLI
-        uses: google-github-actions/setup-gcloud@master
+        uses: google-github-actions/auth@v2
         with:
-          project_id: ${{ secrets.GCP_PROJECT }}
-          # this is the json key of the service account created on the project
-          service_account_key: ${{ secrets.GCP_CREDENTIALS }}  
-          export_default_credentials: true
-
+          # makes sure you configure these and replace with the right value
+          workload_identity_provider: 'projects/123456789/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
+          service_account: 'my-service-account@my-project.iam.gserviceaccount.com'
+      
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+      
       # Deploy the app using kubernetes (deploy.yml)
-      - name: Deploy
+      - name: Use gcloud CLI to Deploy
         # To run kubectl commands against a cluster created in Cloud Console, 
         # from another computer, or by another member of the project, 
         # you need to generate a kubeconfig entry in your environment.
